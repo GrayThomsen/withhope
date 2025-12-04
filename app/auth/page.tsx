@@ -15,30 +15,39 @@ export default function AuthPage() {
   const [errorMsg, setErrorMsg] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setErrorMsg("");
+  e.preventDefault();
+  setErrorMsg("");
 
-    if (mode === "login") {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+  console.log("SUBMIT", mode, email, password);
 
-      if (error) return setErrorMsg(error.message);
+  if (mode === "login") {
+    console.log("Logging in...");
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      console.error(error);
+      return setErrorMsg(error.message);
     }
-
-    if (mode === "signup") {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-      });
-
-      if (error) return setErrorMsg(error.message);
-    }
-
-    // Success
-    router.push("/dashboard");
   }
+
+  if (mode === "signup") {
+    console.log("Signing up...");
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+    if (error) {
+      console.error(error);
+      return setErrorMsg(error.message);
+    }
+  }
+
+  console.log("SUCCESS, redirecting...");
+  router.push("/dashboard");
+}
+
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen p-10">
